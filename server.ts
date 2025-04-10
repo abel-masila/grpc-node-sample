@@ -4,7 +4,9 @@ import * as protoLoader from "@grpc/proto-loader";
 
 import type { ProtoGrpcType } from "./proto/random";
 import type { RandomHandlers } from "./proto/randompackage/Random";
-import type{ TodoResponse } from "./proto/randompackage/TodoResponse";
+import type { TodoResponse } from "./proto/randompackage/TodoResponse";
+import type { ChatResponse } from "./proto/randompackage/ChatResponse";
+import type { ChatRequest } from "./proto/randompackage/ChatRequest";
 
 const PORT = 8082;
 
@@ -33,7 +35,11 @@ function main() {
 		},
 	);
 }
-const todoList:TodoResponse={todos:[]}
+const todoList: TodoResponse = { todos: [] };
+const callObjectByUsername = new Map<
+	string,
+	grpc.ServerDuplexStream<ChatRequest, ChatResponse>
+>();
 function getServer() {
 	const server = new grpc.Server();
 	server.addService(randomPackage.Random.service, {
@@ -56,15 +62,41 @@ function getServer() {
 				}
 			}, 500);
 		},
-		TodoList: (call,callback) => {
+		TodoList: (call, callback) => {
 			call.on("data", (req) => {
 				console.log(req);
 				todoList?.todos?.push(req);
 			});
 			call.on("end", () => {
-				callback(null,{todos:todoList?.todos});
+				callback(null, { todos: todoList?.todos });
 			});
-			
+		},
+		Chat: (call) => {
+			call.on("data", (req) => {
+				const username = call.metadata.get("username")[0] as string;
+				const msg = req.message;
+				for(const [user, userCall] of callObjectByUsername){
+					if(user!==username){
+						userCall.write({
+							usernmame:username,
+							message:msg
+						})
+					}
+				}
+				if(callObjectByUsername.get(username)===undefined){
+					callObjectByUsername.set(username,call)
+				}
+			});
+
+			call.on("end", () => {
+				const username = call.metadata.get("username")[0] as string;
+				callObjectByUsername.delete(username);
+				call.write({
+					usernmame: "Server",
+					message: `See you later ${username}`,
+				});
+				call.end();
+			});
 		},
 	} as RandomHandlers);
 	return server;

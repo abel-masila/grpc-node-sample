@@ -49,30 +49,30 @@ function onClientReady(){
     // stream.on('end', () => {
     //     console.log('Stream ended');
     // });
-    const sampleTodos = [
-        { todo: "Buy groceries", status: "pending" },
-        { todo: "Walk the dog", status: "completed" },
-        { todo: "Read a book", status: "pending" },
-        { todo: "Call mom", status: "pending" },
-        { todo: "Pay bills", status: "completed" },
-        { todo: "Exercise", status: "pending" },
-        { todo: "Write code", status: "completed" },
-        { todo: "Clean house", status: "pending" }
-    ];
+    // const sampleTodos = [
+    //     { todo: "Buy groceries", status: "pending" },
+    //     { todo: "Walk the dog", status: "completed" },
+    //     { todo: "Read a book", status: "pending" },
+    //     { todo: "Call mom", status: "pending" },
+    //     { todo: "Pay bills", status: "completed" },
+    //     { todo: "Exercise", status: "pending" },
+    //     { todo: "Write code", status: "completed" },
+    //     { todo: "Clean house", status: "pending" }
+    // ];
 
-    const stream = client.TodoList((err, response) => {
-        if(err){
-            console.error(err);
-            return;
-        }
-        console.log(response);
-    });
+    // const stream = client.TodoList((err, response) => {
+    //     if(err){
+    //         console.error(err);
+    //         return;
+    //     }
+    //     console.log(response);
+    // });
 
-    // Send 8 random todos
-    for(let i = 0; i < 8; i++) {
-        const randomIndex = Math.floor(Math.random() * sampleTodos.length);
-        stream.write(sampleTodos[randomIndex]);
-    }
+    // // Send 8 random todos
+    // for(let i = 0; i < 8; i++) {
+    //     const randomIndex = Math.floor(Math.random() * sampleTodos.length);
+    //     stream.write(sampleTodos[randomIndex]);
+    // }
     
-    stream.end();
+    // stream.end();
 }

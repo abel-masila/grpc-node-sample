@@ -9,6 +9,8 @@ type SubtypeConstructor<Constructor extends new (...args: any) => any, Subtype> 
 
 export interface ProtoGrpcType {
   randompackage: {
+    ChatRequest: MessageTypeDefinition
+    ChatResponse: MessageTypeDefinition
     NumberRequest: MessageTypeDefinition
     NumberResponse: MessageTypeDefinition
     PingRequest: MessageTypeDefinition
