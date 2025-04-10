@@ -75,6 +75,7 @@ function getServer() {
 			call.on("data", (req) => {
 				const username = call.metadata.get("username")[0] as string;
 				const msg = req.message;
+				console.log(req)
 				for(const [user, userCall] of callObjectByUsername){
 					if(user!==username){
 						userCall.write({
@@ -91,6 +92,16 @@ function getServer() {
 			call.on("end", () => {
 				const username = call.metadata.get("username")[0] as string;
 				callObjectByUsername.delete(username);
+				for(const [user, userCall] of callObjectByUsername){
+				
+						userCall.write({
+							usernmame:username,
+							message:`${username} disconnected`
+						})
+					
+				}
+
+				console.log(`${username} disconnected`);
 				call.write({
 					usernmame: "Server",
 					message: `See you later ${username}`,
